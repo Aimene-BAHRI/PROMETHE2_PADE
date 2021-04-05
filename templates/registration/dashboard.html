@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Username : {{ user_profile.user.username }} <br>
+Role : {{ user_profile.role }} <br>
+{{ user_profile.id }} <br>
+{% if user_profile.role == 'Coordinateur' %}
+	matrice de performance: <br>
+	<table border="1" class="dataframe">
+		<thead>
+		  <tr style="text-align: right;">
+			{% for column in columns %}
+				<th>{{ column }}</th>
+			{% endfor %}
+		  </tr>
+		</thead>
+		<tbody>
+			{% for rows in data %}
+				<tr>
+					{% for row in rows %}
+					 <td>
+						 {{ row }}
+					 </td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		  
+		</tbody>
+	</table>
+{% elif user_profile.role == 'Decideur' %}
+matrice de performance: <br>
+	<table border="1" class="dataframe">
+		<thead>
+		  <tr style="text-align: right;">
+			{% for column in columns %}
+				<th>{{ column }}</th>
+			{% endfor %}
+		  </tr>
+		</thead>
+		<tbody>
+			{% for rows in data %}
+				<tr>
+					{% for row in rows %}
+					 <td>
+						 {{ row }}
+					 </td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		  
+		</tbody>
+	</table>
+	les poids: <br>
+	<table border="1" class="dataframe">
+		<thead>
+		<tr style="text-align: right;">
+			{% for column in columns %}
+				<th>{{ column }}</th>
+			{% endfor %}
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					#
+				</td>
+				{% for row in weights_data %}
+					
+					<td>
+						{{ row }}
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+{% endif %}
+
+{% if user_profile.role == 'Coordinateur' %}
+	Les decideurs: <br>
+	{% for decideur in decideurs %}	  
+		{{ decideur }} <br>
+		{% if decideur.datasDecid.last %}
+	  		'Matrice de performance deja envoyé'
+		{% else %}
+	  		<p>
+				il faut envoyé une matrice de performance au <strong>{{ decideur }}</strong> 
+			</p> 
+			<button type="button" onclick="location.href='{% url 'sendmp' %}'"> Send Matrix</button>
+		{% endif %}
+	{% endfor %}
+{% endif %}
+
+{% if user_profile.role == 'Decideur' and user_profile.datasDecid.last.mp %}
+	<button type="button" onclick="location.href='{% url 'classification' %}'"> Classification</button>
+	{% if output %}
+		{{ output}}
+	{% endif %}
+{% endif %}
+{% endblock %}
